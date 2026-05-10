@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.core.management import call_command
 from quiz.models import Subject
 
 
@@ -20,6 +21,8 @@ class Command(BaseCommand):
     help = "Seed default subjects"
 
     def handle(self, *args, **options):
+        self.stdout.write("Running migrations first...")
+        call_command("migrate", "--run-syncdb", verbosity=0)
         created = 0
         for name, emoji in SUBJECTS:
             _, was_created = Subject.objects.get_or_create(

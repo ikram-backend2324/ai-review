@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% block title %}Home — QuizBot{% endblock %}
+
+{% block extra_head %}
+<style>
+  .home-wrap { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 4rem; }
+
+  /* Hero */
+  .hero {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 2rem; margin-bottom: 3.5rem;
+  }
+
+  .hero-left { flex: 1; }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent-cyan); margin-bottom: 0.85rem;
+  }
+
+  .hero-eyebrow::before {
+    content: ''; width: 20px; height: 2px;
+    background: var(--accent-cyan); border-radius: 1px;
+    box-shadow: 0 0 8px var(--accent-cyan);
+  }
+
+  .hero-title {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1;
+    letter-spacing: -0.04em; margin-bottom: 1rem;
+  }
+
+  .hero-title span {
+    background: linear-gradient(135deg, #a78bfa, #818cf8, #22d3ee);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub { color: var(--text-secondary); font-size: 1rem; max-width: 500px; line-height: 1.7; }
+
+  /* Stats row */
+  .stats-row {
+    display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    display: flex; align-items: center; gap: 0.55rem;
+    padding: 0.55rem 1rem; border-radius: 99px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    font-size: 0.85rem; font-weight: 500;
+  }
+
+  .stat-chip .stat-val {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1rem; color: var(--text-primary);
+  }
+
+  .stat-chip .stat-label { color: var(--text-secondary); }
+
+  /* Section heading */
+  .section-head {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .section-head h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1.15rem; letter-spacing: -0.02em;
+  }
+
+  .section-head .badge {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.2rem 0.6rem; border-radius: 4px;
+    background: rgba(124,58,237,0.15); color: #a78bfa;
+    border: 1px solid rgba(124,58,237,0.2);
+  }
+
+  /* Subject grid */
+  .subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .subject-card {
+    display: flex; flex-direction: column; align-items: flex-start;
+    padding: 1.4rem 1.25rem 1.25rem;
+    border-radius: 18px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    text-decoration: none; color: var(--text-primary);
+    transition: var(--transition);
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    animation: card-in 0.35s ease-out both;
+  }
+
+  {% for i in "0123456789" %}
+  .subject-card:nth-child({{ forloop.counter }}) { animation-delay: {{ forloop.counter0 }}00ms; }
+  {% endfor %}
+
+  @keyframes card-in {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .subject-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(124,58,237,0), rgba(124,58,237,0.08));
+    opacity: 0; transition: var(--transition);
+  }
+
+  .subject-card:hover {
+    border-color: rgba(124,58,237,0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(124,58,237,0.2);
+  }
+
+  .subject-card:hover::before { opacity: 1; }
+
+  .subject-emoji {
+    font-size: 2rem; margin-bottom: 0.85rem;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    transition: transform var(--transition);
+  }
+
+  .subject-card:hover .subject-emoji { transform: scale(1.15) rotate(-5deg); }
+
+  .subject-name {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 0.95rem; letter-spacing: -0.01em;
+  }
+
+  .subject-arrow {
+    margin-top: auto; padding-top: 0.75rem;
+    font-size: 0.75rem; color: var(--text-muted);
+    display: flex; align-items: center; gap: 0.3rem;
+    transition: var(--transition);
+  }
+
+  .subject-card:hover .subject-arrow { color: #a78bfa; transform: translateX(3px); }
+
+  /* Recent sessions */
+  .session-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+  .session-row {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    text-decoration: none; color: var(--text-primary);
+    transition: var(--transition);
+  }
+
+  .session-row:hover { border-color: var(--border-glow); background: var(--bg-surface-hover); }
+
+  .session-emoji { font-size: 1.4rem; flex-shrink: 0; }
+
+  .session-info { flex: 1; min-width: 0; }
+
+  .session-subj {
+    font-weight: 600; font-size: 0.9rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .session-meta { font-size: 0.775rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+  .session-score {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: 1rem; flex-shrink: 0;
+  }
+
+  .score-high { color: #4ade80; }
+  .score-mid  { color: var(--accent-amber); }
+  .score-low  { color: var(--accent-rose); }
+
+  .empty-state {
+    padding: 2rem; text-align: center;
+    color: var(--text-muted); font-size: 0.875rem;
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+  }
+
+  @media (max-width: 640px) {
+    .home-wrap { padding: 2rem 1rem 3rem; }
+    .hero { flex-direction: column; }
+    .subject-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="home-wrap">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">AI-Powered Learning</div>
+      <h1 class="hero-title">
+        Hello, {{ user.username }}.<br>
+        What will you <span>master today?</span>
+      </h1>
+      <p class="hero-sub">
+        Pick a subject and answer AI-generated questions. Get instant feedback and track your progress over time.
+      </p>
+      <div class="stats-row">
+        <div class="stat-chip">
+          <span class="stat-val">{{ total_sessions }}</span>
+          <span class="stat-label">Sessions</span>
+        </div>
+        {% if best_rating %}
+        <div class="stat-chip">
+          <span class="stat-val">{% for i in "12345" %}{% if forloop.counter <= best_rating %}⭐{% endif %}{% endfor %}</span>
+          <span class="stat-label">Best rating</span>
+        </div>
+        {% endif %}
+        <div class="stat-chip">
+          <span class="stat-val">{{ subjects.count }}</span>
+          <span class="stat-label">Subjects</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subjects -->
+  <div class="section-head">
+    <h2>Choose a Subject</h2>
+    <span class="badge">{{ subjects.count }} available</span>
+  </div>
+
+  <div class="subject-grid">
+    {% for subject in subjects %}
+    <a href="{% url 'quiz' subject.pk %}" class="subject-card">
+      <div class="subject-emoji">{{ subject.emoji }}</div>
+      <div class="subject-name">{{ subject.name }}</div>
+      <div class="subject-arrow">Start quiz <i class="fa-solid fa-arrow-right" style="font-size:0.65rem;"></i></div>
+    </a>
+    {% empty %}
+    <div class="empty-state" style="grid-column:1/-1;">
+      No subjects yet. Ask an admin to add some.
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Recent sessions -->
+  {% if recent_sessions %}
+  <div class="section-head">
+    <h2>Recent Sessions</h2>
+    <a href="{% url 'history' %}" style="font-size:0.8rem;color:#a78bfa;text-decoration:none;margin-left:auto;">
+      View all <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;"></i>
+    </a>
+  </div>
+
+  <div class="session-list">
+    {% for session in recent_sessions %}
+    <a href="{% url 'results' session.pk %}" class="session-row">
+      <div class="session-emoji">{{ session.subject.emoji }}</div>
+      <div class="session-info">
+        <div class="session-subj">{{ session.subject.name }}</div>
+        <div class="session-meta">{{ session.answers.count }} questions · {{ session.ended_at|date:"M d, Y" }}</div>
+      </div>
+      {% if session.average_score is not None %}
+      <div class="session-score {% if session.average_score >= 75 %}score-high{% elif session.average_score >= 50 %}score-mid{% else %}score-low{% endif %}">
+        {{ session.average_score|floatformat:0 }}%
+      </div>
+      {% endif %}
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

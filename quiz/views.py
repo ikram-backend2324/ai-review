@@ -78,7 +78,6 @@ def home_view(request):
 @login_required
 def quiz_view(request, subject_id):
     subject = get_object_or_404(Subject, pk=subject_id, is_active=True)
-    # End any active session for this user
     QuizSession.objects.filter(user=request.user, status="active").update(status="completed")
     session = QuizSession.objects.create(user=request.user, subject=subject)
     return render(request, "quiz/quiz.html", {"subject": subject, "session_id": session.pk})
@@ -101,14 +100,21 @@ def history_view(request):
 
 # ─── AJAX / API Views ─────────────────────────────────────────────────────────
 
+def _get_lang(data: dict) -> str:
+    """Extract and validate lang from request data."""
+    lang = data.get("lang", "en")
+    return lang if lang in ("en", "ru", "uz") else "en"
+
+
 @login_required
 @require_POST
 def api_get_question(request):
     data = json.loads(request.body)
     session_id = data.get("session_id")
+    lang = _get_lang(data)
+
     session = get_object_or_404(QuizSession, pk=session_id, user=request.user, status="active")
-    question = generate_question(session.subject.name)
-    # Store the current question in session (Django session, not model)
+    question = generate_question(session.subject.name, lang=lang)
     request.session[f"current_question_{session_id}"] = question
     return JsonResponse({"question": question})
 
@@ -119,6 +125,7 @@ def api_submit_answer(request):
     data = json.loads(request.body)
     session_id = data.get("session_id")
     user_answer = data.get("answer", "").strip()
+    lang = _get_lang(data)
 
     session = get_object_or_404(QuizSession, pk=session_id, user=request.user, status="active")
     question = request.session.get(f"current_question_{session_id}", "")
@@ -128,7 +135,7 @@ def api_submit_answer(request):
     if not user_answer:
         return JsonResponse({"error": "Answer cannot be empty."}, status=400)
 
-    feedback, score = evaluate_answer(question, user_answer)
+    feedback, score = evaluate_answer(question, user_answer, lang=lang)
 
     QuizAnswer.objects.create(
         session=session,

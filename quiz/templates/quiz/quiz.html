@@ -154,7 +154,7 @@
       const res = await fetch('/api/question/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-        body: JSON.stringify({ session_id: SESSION_ID })
+        body: JSON.stringify({ session_id: SESSION_ID, lang: I18N.current })
       });
       const data = await res.json();
       hideLoading();
@@ -178,7 +178,7 @@
       const res = await fetch('/api/answer/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-        body: JSON.stringify({ session_id: SESSION_ID, answer: ans })
+        body: JSON.stringify({ session_id: SESSION_ID, answer: ans, lang: I18N.current })
       });
       const data = await res.json();
       hideLoading();
@@ -214,7 +214,7 @@
       const res = await fetch('/api/end/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
-        body: JSON.stringify({ session_id: SESSION_ID })
+        body: JSON.stringify({ session_id: SESSION_ID, lang: I18N.current })
       });
       const data = await res.json();
       window.location.href = data.redirect;

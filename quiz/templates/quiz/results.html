@@ -3,109 +3,34 @@
 
 {% block extra_head %}
 <style>
-  .results-wrap { max-width: 760px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
-
-  /* Hero score */
-  .result-hero {
-    text-align: center; padding: 3rem 2rem;
-    border-radius: 24px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.09);
-    backdrop-filter: blur(30px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    margin-bottom: 2rem; position: relative; overflow: hidden;
-  }
-
-  .result-hero::before {
-    content: ''; position: absolute;
-    top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--accent-violet), var(--accent-cyan), var(--accent-rose));
-  }
-
-  .result-bg-text {
-    position: absolute; font-family: var(--font-display);
-    font-size: 12rem; font-weight: 900; opacity: 0.025;
-    top: 50%; left: 50%; transform: translate(-50%, -50%);
-    pointer-events: none; user-select: none; white-space: nowrap;
-  }
-
-  .result-subject { font-size: 1.75rem; margin-bottom: 0.5rem; }
-
-  .result-title {
-    font-family: var(--font-display); font-weight: 800;
-    font-size: clamp(1.5rem, 4vw, 2.2rem); letter-spacing: -0.04em;
-    margin-bottom: 0.5rem;
-  }
-
-  .big-score {
-    font-family: var(--font-display); font-weight: 900;
-    font-size: clamp(4rem, 12vw, 7rem); line-height: 1;
-    letter-spacing: -0.05em;
-    background: linear-gradient(135deg, #a78bfa, #818cf8, #22d3ee);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text; margin: 0.75rem 0;
-  }
-
-  .result-stars { font-size: 2rem; margin-bottom: 0.75rem; letter-spacing: 0.1em; }
-
-  .result-stats {
-    display: flex; justify-content: center; gap: 2rem;
-    margin-top: 1.5rem; flex-wrap: wrap;
-  }
-
-  .result-stat { text-align: center; }
-  .result-stat-val {
-    font-family: var(--font-display); font-weight: 700; font-size: 1.5rem;
-  }
-  .result-stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.2rem; }
-
-  /* CTA */
-  .result-cta { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
-
-  /* Section heading */
-  .section-head { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
-  .section-head h2 { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
-
-  /* Answers */
-  .answer-list { display: flex; flex-direction: column; gap: 1rem; }
-
-  .answer-item {
-    padding: 1.25rem 1.5rem;
-    border-radius: var(--radius);
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--item-accent);
-  }
-
-  .answer-q {
-    font-weight: 600; font-size: 0.9rem;
-    color: var(--text-secondary); margin-bottom: 0.5rem;
-  }
-
-  .answer-your {
-    font-size: 0.925rem; color: var(--text-primary); margin-bottom: 0.75rem;
-    padding-left: 0.75rem; border-left: 2px solid rgba(255,255,255,0.1);
-  }
-
-  .answer-ai {
-    font-size: 0.825rem; color: var(--text-muted); line-height: 1.6;
-    white-space: pre-wrap;
-  }
-
-  .answer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-
-  .answer-num { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
-
-  .score-chip {
-    font-family: var(--font-display); font-weight: 800; font-size: 0.85rem;
-    padding: 0.2rem 0.65rem; border-radius: 6px;
-  }
+  .results-wrap { max-width:760px; margin:0 auto; padding:3rem 1.5rem 5rem; }
+  .result-hero { text-align:center; padding:3rem 2rem; border-radius:24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); backdrop-filter:blur(30px); box-shadow:0 20px 60px rgba(0,0,0,0.3); margin-bottom:2rem; position:relative; overflow:hidden; }
+  .result-hero::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--accent-violet),var(--accent-cyan),var(--accent-rose)); }
+  .result-bg-text { position:absolute; font-family:var(--font-display); font-size:12rem; font-weight:900; opacity:0.025; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; user-select:none; white-space:nowrap; }
+  .result-subject { font-size:1.75rem; margin-bottom:0.5rem; }
+  .result-title { font-family:var(--font-display); font-weight:800; font-size:clamp(1.5rem,4vw,2.2rem); letter-spacing:-0.04em; margin-bottom:0.5rem; }
+  .big-score { font-family:var(--font-display); font-weight:900; font-size:clamp(4rem,12vw,7rem); line-height:1; letter-spacing:-0.05em; background:linear-gradient(135deg,#a78bfa,#818cf8,#22d3ee); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:0.75rem 0; }
+  .result-stars { font-size:2rem; margin-bottom:0.75rem; letter-spacing:0.1em; }
+  .result-stats { display:flex; justify-content:center; gap:2rem; margin-top:1.5rem; flex-wrap:wrap; }
+  .result-stat { text-align:center; }
+  .result-stat-val { font-family:var(--font-display); font-weight:700; font-size:1.5rem; }
+  .result-stat-label { font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-top:0.2rem; }
+  .result-cta { display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap; margin-bottom:2.5rem; }
+  .section-head { display:flex; align-items:center; gap:0.75rem; margin-bottom:1.25rem; }
+  .section-head h2 { font-family:var(--font-display); font-weight:700; font-size:1.1rem; }
+  .answer-list { display:flex; flex-direction:column; gap:1rem; }
+  .answer-item { padding:1.25rem 1.5rem; border-radius:var(--radius); background:var(--bg-surface); border:1px solid var(--border); border-left:4px solid var(--item-accent); }
+  .answer-q { font-weight:600; font-size:0.9rem; color:var(--text-secondary); margin-bottom:0.5rem; }
+  .answer-your { font-size:0.925rem; color:var(--text-primary); margin-bottom:0.75rem; padding-left:0.75rem; border-left:2px solid rgba(255,255,255,0.1); }
+  .answer-ai { font-size:0.825rem; color:var(--text-muted); line-height:1.6; white-space:pre-wrap; }
+  .answer-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.75rem; }
+  .answer-num { font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-muted); }
+  .score-chip { font-family:var(--font-display); font-weight:800; font-size:0.85rem; padding:0.2rem 0.65rem; border-radius:6px; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="results-wrap">
-  <!-- Hero -->
   <div class="result-hero">
     <div class="result-bg-text">DONE</div>
     <div class="result-subject">{{ session.subject.emoji }}</div>
@@ -122,71 +47,67 @@
     <div class="result-stats">
       <div class="result-stat">
         <div class="result-stat-val">{{ answers.count }}</div>
-        <div class="result-stat-label">Questions</div>
+        <div class="result-stat-label" data-i18n="res_questions">Questions</div>
       </div>
       {% if session.rating %}
       <div class="result-stat">
         <div class="result-stat-val">{{ session.rating }}/5</div>
-        <div class="result-stat-label">Rating</div>
+        <div class="result-stat-label" data-i18n="res_rating">Rating</div>
       </div>
       {% endif %}
       <div class="result-stat">
         <div class="result-stat-val">{{ session.subject.name }}</div>
-        <div class="result-stat-label">Subject</div>
+        <div class="result-stat-label" data-i18n="res_subject">Subject</div>
       </div>
     </div>
   </div>
 
-  <!-- CTA -->
   <div class="result-cta">
     <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
-      <i class="fa-solid fa-house"></i> Try Another Subject
+      <i class="fa-solid fa-house"></i> <span data-i18n="res_cta_another">Try Another Subject</span>
     </a>
     <a href="{% url 'history' %}" class="btn btn-outline">
-      <i class="fa-solid fa-clock-rotate-left"></i> View History
+      <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="res_view_history">View History</span>
     </a>
   </div>
 
-  <!-- Answer log -->
   {% if answers %}
   <div class="section-head">
-    <h2>Answer Log</h2>
+    <h2 data-i18n="res_log">Answer Log</h2>
   </div>
 
   <div class="answer-list">
     {% for answer in answers %}
     {% if answer.score >= 75 %}
-      {% with accent="#4ade80" chip_bg="rgba(74,222,128,0.12)" chip_color="#4ade80" %}
-      <div class="answer-item" style="--item-accent:{{ accent }}">
-        <div class="answer-header">
-          <div class="answer-num">Question {{ forloop.counter }}</div>
-          <div class="score-chip" style="background:{{ chip_bg }};color:{{ chip_color }}">{{ answer.score }}%</div>
-        </div>
-        <div class="answer-q">{{ answer.question }}</div>
-        <div class="answer-your">{{ answer.user_answer }}</div>
-        <div class="answer-ai">{{ answer.ai_feedback }}</div>
+    <div class="answer-item" style="--item-accent:#4ade80">
+      <div class="answer-header">
+        <div class="answer-num"><span data-i18n="res_q_prefix">Question</span> {{ forloop.counter }}</div>
+        <div class="score-chip" style="background:rgba(74,222,128,0.12);color:#4ade80">{{ answer.score }}%</div>
       </div>
-      {% endwith %}
+      <div class="answer-q">{{ answer.question }}</div>
+      <div class="answer-your">{{ answer.user_answer }}</div>
+      <div class="answer-ai">{{ answer.ai_feedback }}</div>
+    </div>
     {% elif answer.score >= 50 %}
-      <div class="answer-item" style="--item-accent:#f59e0b">
-        <div class="answer-header">
-          <div class="answer-num">Question {{ forloop.counter }}</div>
-          <div class="score-chip" style="background:rgba(245,158,11,0.12);color:#f59e0b">{{ answer.score }}%</div>
-        </div>
-        <div class="answer-q">{{ answer.question }}</div>
-        <div class="answer-your">{{ answer.user_answer }}</div>
-        <div class="answer-ai">{{ answer.ai_feedback }}</div>
+    <div class="answer-item" style="--item-accent:#f59e0b">
+      <div class="answer-header">
+        <div class="answer-num"><span data-i18n="res_q_prefix">Question</span> {{ forloop.counter }}</div>
+        <div class="score-chip" style="background:rgba(245,158,11,0.12);color:#f59e0b">{{ answer.score }}%</div>
       </div>
+      <div class="answer-q">{{ answer.question }}</div>
+      <div class="answer-your">{{ answer.user_answer }}</div>
+      <div class="answer-ai">{{ answer.ai_feedback }}</div>
+    </div>
     {% else %}
-      <div class="answer-item" style="--item-accent:#f43f5e">
-        <div class="answer-header">
-          <div class="answer-num">Question {{ forloop.counter }}</div>
-          <div class="score-chip" style="background:rgba(244,63,94,0.12);color:#f43f5e">{{ answer.score }}%</div>
-        </div>
-        <div class="answer-q">{{ answer.question }}</div>
-        <div class="answer-your">{{ answer.user_answer }}</div>
-        <div class="answer-ai">{{ answer.ai_feedback }}</div>
+    <div class="answer-item" style="--item-accent:#f43f5e">
+      <div class="answer-header">
+        <div class="answer-num"><span data-i18n="res_q_prefix">Question</span> {{ forloop.counter }}</div>
+        <div class="score-chip" style="background:rgba(244,63,94,0.12);color:#f43f5e">{{ answer.score }}%</div>
       </div>
+      <div class="answer-q">{{ answer.question }}</div>
+      <div class="answer-your">{{ answer.user_answer }}</div>
+      <div class="answer-ai">{{ answer.ai_feedback }}</div>
+    </div>
     {% endif %}
     {% endfor %}
   </div>

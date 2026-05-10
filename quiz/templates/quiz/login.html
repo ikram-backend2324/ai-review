@@ -3,84 +3,42 @@
 
 {% block extra_head %}
 <style>
-  .auth-wrap {
-    min-height: 100vh;
-    display: flex; align-items: center; justify-content: center;
-    padding: 2rem 1rem;
-  }
-
-  .auth-box {
-    width: 100%; max-width: 420px;
-    padding: 2.5rem;
-    border-radius: 24px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.09);
-    backdrop-filter: blur(40px);
-    box-shadow: 0 32px 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
-  }
-
-  .auth-logo {
-    display: flex; align-items: center; gap: 0.6rem;
-    margin-bottom: 2rem;
-  }
-
-  .auth-logo-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: linear-gradient(135deg, #7c3aed, #6366f1);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.25rem;
-    box-shadow: 0 8px 24px rgba(124,58,237,0.4);
-  }
-
-  .auth-logo-text {
-    font-family: var(--font-display); font-weight: 800;
-    font-size: 1.3rem; letter-spacing: -0.02em;
-  }
-
-  h1.auth-title {
-    font-family: var(--font-display); font-weight: 700;
-    font-size: 1.6rem; letter-spacing: -0.03em;
-    margin-bottom: 0.35rem;
-  }
-
-  .auth-subtitle {
-    color: var(--text-secondary); font-size: 0.875rem;
-    margin-bottom: 2rem;
-  }
-
-  .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
-
-  .auth-footer {
-    margin-top: 1.5rem; text-align: center;
-    font-size: 0.85rem; color: var(--text-secondary);
-  }
-
-  .auth-footer a {
-    color: #a78bfa; text-decoration: none; font-weight: 600;
-    transition: var(--transition);
-  }
-
-  .auth-footer a:hover { color: var(--text-primary); }
-
-  .divider {
-    height: 1px; background: var(--border); margin: 0.5rem 0;
-  }
-
-  .btn-primary { width: 100%; }
-
-  /* Floating orbs behind card */
-  .orb {
-    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-    filter: blur(80px); opacity: 0.12;
-  }
-  .orb-1 { width: 400px; height: 400px; background: #7c3aed; top: -100px; left: -100px; }
-  .orb-2 { width: 300px; height: 300px; background: #22d3ee; bottom: -80px; right: -80px; }
+  .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem 1rem; }
+  .auth-box { width:100%; max-width:420px; padding:2.5rem; border-radius:24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.09); backdrop-filter:blur(40px); box-shadow:0 32px 80px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.06); }
+  .auth-logo { display:flex; align-items:center; gap:0.6rem; margin-bottom:2rem; }
+  .auth-logo-icon { width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg,#7c3aed,#6366f1); display:flex; align-items:center; justify-content:center; font-size:1.25rem; box-shadow:0 8px 24px rgba(124,58,237,0.4); }
+  .auth-logo-text { font-family:var(--font-display); font-weight:800; font-size:1.3rem; letter-spacing:-0.02em; }
+  h1.auth-title { font-family:var(--font-display); font-weight:700; font-size:1.6rem; letter-spacing:-0.03em; margin-bottom:0.35rem; }
+  .auth-subtitle { color:var(--text-secondary); font-size:0.875rem; margin-bottom:2rem; }
+  .auth-form { display:flex; flex-direction:column; gap:1.25rem; }
+  .auth-footer { margin-top:1.5rem; text-align:center; font-size:0.85rem; color:var(--text-secondary); }
+  .auth-footer a { color:#a78bfa; text-decoration:none; font-weight:600; transition:var(--transition); }
+  .auth-footer a:hover { color:var(--text-primary); }
+  .btn-primary { width:100%; }
+  .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(80px); opacity:0.12; }
+  .orb-1 { width:400px; height:400px; background:#7c3aed; top:-100px; left:-100px; }
+  .orb-2 { width:300px; height:300px; background:#22d3ee; bottom:-80px; right:-80px; }
+  /* lang switcher on auth pages */
+  .auth-lang { position:fixed; top:1.25rem; right:1.5rem; z-index:200; display:flex; align-items:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:8px; overflow:hidden; backdrop-filter:blur(20px); }
+  .lang-btn { font-family:var(--font-body); font-weight:600; font-size:0.72rem; letter-spacing:0.04em; color:var(--text-muted); background:none; border:none; padding:0.35rem 0.6rem; cursor:pointer; transition:var(--transition); line-height:1; }
+  .lang-btn:hover { color:var(--text-primary); background:rgba(255,255,255,0.06); }
+  .lang-btn.active { color:var(--text-primary); background:linear-gradient(135deg,rgba(124,58,237,0.35),rgba(99,102,241,0.25)); }
+  .lang-divider { width:1px; height:14px; background:rgba(255,255,255,0.08); flex-shrink:0; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
+
+<!-- Lang switcher for auth pages -->
+<div class="auth-lang" id="lang-switcher">
+  <button class="lang-btn" data-lang="en">EN</button>
+  <div class="lang-divider"></div>
+  <button class="lang-btn" data-lang="ru">RU</button>
+  <div class="lang-divider"></div>
+  <button class="lang-btn" data-lang="uz">UZ</button>
+</div>
 
 <div class="auth-wrap">
   <div class="auth-box">
@@ -89,8 +47,8 @@
       <span class="auth-logo-text">QuizBot</span>
     </div>
 
-    <h1 class="auth-title">Welcome back</h1>
-    <p class="auth-subtitle">Sign in to continue your learning journey</p>
+    <h1 class="auth-title" data-i18n="login_title">Welcome back</h1>
+    <p class="auth-subtitle" data-i18n="login_sub">Sign in to continue your learning journey</p>
 
     {% for msg in messages %}
     <div class="alert alert-error" style="margin-bottom:1rem;">
@@ -101,20 +59,21 @@
     <form method="post" class="auth-form">
       {% csrf_token %}
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="your_username" autocomplete="username" required />
+        <label for="username" data-i18n="login_username">Username</label>
+        <input type="text" id="username" name="username" data-i18n-placeholder="login_username" placeholder="Username" autocomplete="username" required />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+        <label for="password" data-i18n="login_password">Password</label>
+        <input type="password" id="password" name="password" data-i18n-placeholder="login_password" placeholder="Password" autocomplete="current-password" required />
       </div>
       <button type="submit" class="btn btn-primary btn-lg">
-        Sign in <i class="fa-solid fa-arrow-right"></i>
+        <span data-i18n="login_btn">Sign in</span> <i class="fa-solid fa-arrow-right"></i>
       </button>
     </form>
 
     <div class="auth-footer">
-      Don't have an account? <a href="{% url 'register' %}">Create one</a>
+      <span data-i18n="login_no_account">Don't have an account?</span>
+      <a href="{% url 'register' %}" data-i18n="login_create">Create one</a>
     </div>
   </div>
 </div>

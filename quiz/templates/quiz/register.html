@@ -12,18 +12,31 @@
   .auth-subtitle { color:var(--text-secondary); font-size:0.875rem; margin-bottom:2rem; }
   .auth-form { display:flex; flex-direction:column; gap:1.25rem; }
   .auth-footer { margin-top:1.5rem; text-align:center; font-size:0.85rem; color:var(--text-secondary); }
-  .auth-footer a { color:#a78bfa; text-decoration:none; font-weight:600; transition:var(--transition); }
+  .auth-footer a { color:#a78bfa; text-decoration:none; font-weight:600; }
   .auth-footer a:hover { color:var(--text-primary); }
   .btn-primary { width:100%; }
   .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(80px); opacity:0.12; }
   .orb-1 { width:400px; height:400px; background:#7c3aed; top:-100px; right:-100px; }
   .orb-2 { width:300px; height:300px; background:#22d3ee; bottom:-80px; left:-80px; }
+  .auth-lang { position:fixed; top:1.25rem; right:1.5rem; z-index:200; display:flex; align-items:center; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:8px; overflow:hidden; backdrop-filter:blur(20px); }
+  .lang-btn { font-family:var(--font-body); font-weight:600; font-size:0.72rem; letter-spacing:0.04em; color:var(--text-muted); background:none; border:none; padding:0.35rem 0.6rem; cursor:pointer; transition:var(--transition); line-height:1; }
+  .lang-btn:hover { color:var(--text-primary); background:rgba(255,255,255,0.06); }
+  .lang-btn.active { color:var(--text-primary); background:linear-gradient(135deg,rgba(124,58,237,0.35),rgba(99,102,241,0.25)); }
+  .lang-divider { width:1px; height:14px; background:rgba(255,255,255,0.08); flex-shrink:0; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="orb orb-1"></div>
 <div class="orb orb-2"></div>
+
+<div class="auth-lang" id="lang-switcher">
+  <button class="lang-btn" data-lang="en">EN</button>
+  <div class="lang-divider"></div>
+  <button class="lang-btn" data-lang="ru">RU</button>
+  <div class="lang-divider"></div>
+  <button class="lang-btn" data-lang="uz">UZ</button>
+</div>
 
 <div class="auth-wrap">
   <div class="auth-box">
@@ -32,8 +45,8 @@
       <span class="auth-logo-text">QuizBot</span>
     </div>
 
-    <h1 class="auth-title">Create account</h1>
-    <p class="auth-subtitle">Start your AI-powered learning journey today</p>
+    <h1 class="auth-title" data-i18n="reg_title">Create account</h1>
+    <p class="auth-subtitle" data-i18n="reg_sub">Start your AI-powered learning journey today</p>
 
     {% for msg in messages %}
     <div class="alert alert-error" style="margin-bottom:1rem;">
@@ -44,24 +57,25 @@
     <form method="post" class="auth-form">
       {% csrf_token %}
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="choose_a_username" autocomplete="username" required />
+        <label for="username" data-i18n="reg_username">Username</label>
+        <input type="text" id="username" name="username" data-i18n-placeholder="reg_username" placeholder="Username" autocomplete="username" required />
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="••••••••" autocomplete="new-password" required />
+        <label for="password" data-i18n="reg_password">Password</label>
+        <input type="password" id="password" name="password" data-i18n-placeholder="reg_password" placeholder="Password" autocomplete="new-password" required />
       </div>
       <div class="form-group">
-        <label for="password2">Confirm Password</label>
-        <input type="password" id="password2" name="password2" placeholder="••••••••" autocomplete="new-password" required />
+        <label for="password2" data-i18n="reg_confirm">Confirm Password</label>
+        <input type="password" id="password2" name="password2" data-i18n-placeholder="reg_confirm" placeholder="Confirm Password" autocomplete="new-password" required />
       </div>
       <button type="submit" class="btn btn-primary btn-lg">
-        Create Account <i class="fa-solid fa-arrow-right"></i>
+        <span data-i18n="reg_btn">Create Account</span> <i class="fa-solid fa-arrow-right"></i>
       </button>
     </form>
 
     <div class="auth-footer">
-      Already have an account? <a href="{% url 'login' %}">Sign in</a>
+      <span data-i18n="reg_have_account">Already have an account?</span>
+      <a href="{% url 'login' %}" data-i18n="reg_signin">Sign in</a>
     </div>
   </div>
 </div>

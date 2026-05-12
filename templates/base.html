@@ -518,6 +518,22 @@
     }
   };
 
+  /* ─── SUBJECT NAME TRANSLATIONS ─────────────────────────────────────────────
+     Keys are the Russian DB values (canonical). Used by data-subject-key attrs.
+  ─────────────────────────────────────────────────────────────────────────── */
+  const SUBJECT_NAMES = {
+    "Математика":      { en: "Mathematics",  ru: "Математика",      uz: "Matematika"   },
+    "Физика":          { en: "Physics",       ru: "Физика",          uz: "Fizika"       },
+    "История":         { en: "History",       ru: "История",         uz: "Tarix"        },
+    "Языки":           { en: "Languages",     ru: "Языки",           uz: "Tillar"       },
+    "Программирование":{ en: "Programming",   ru: "Программирование",uz: "Dasturlash"   },
+    "Астрономия":      { en: "Astronomy",     ru: "Астрономия",      uz: "Astronomiya"  },
+    "Психология":      { en: "Psychology",    ru: "Психология",      uz: "Psixologiya"  },
+    "Химия":           { en: "Chemistry",     ru: "Химия",           uz: "Kimyo"        },
+    "Философия":       { en: "Philosophy",    ru: "Философия",       uz: "Falsafa"      },
+    "Экономика":       { en: "Economics",     ru: "Экономика",       uz: "Iqtisodiyot"  },
+  };
+
   /* ─── i18n ENGINE ─── */
   const I18N = {
     current: localStorage.getItem('quizbot_lang') || 'en',
@@ -526,7 +542,14 @@
       return (TRANSLATIONS[this.current] || TRANSLATIONS.en)[key] || key;
     },
 
+    subjectName(ruKey) {
+      const map = SUBJECT_NAMES[ruKey];
+      if (!map) return ruKey;
+      return map[this.current] || map.en || ruKey;
+    },
+
     apply() {
+      // Translate UI strings
       document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         el.textContent = this.t(key);
@@ -534,7 +557,13 @@
       document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
         el.placeholder = this.t(el.getAttribute('data-i18n-placeholder'));
       });
-      // Update active lang button
+
+      // Translate subject names — elements carry data-subject-key="<Russian name>"
+      document.querySelectorAll('[data-subject-key]').forEach(el => {
+        el.textContent = this.subjectName(el.getAttribute('data-subject-key'));
+      });
+
+      // Update active lang button & html lang attr
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === this.current);
       });
@@ -545,14 +574,12 @@
       this.current = lang;
       localStorage.setItem('quizbot_lang', lang);
       this.apply();
-      // Fire event so page-specific scripts can react
       window.dispatchEvent(new CustomEvent('langchange', { detail: lang }));
     }
   };
 
   // Boot
   document.addEventListener('DOMContentLoaded', () => {
-    // Wire up buttons
     document.querySelectorAll('.lang-btn').forEach(btn => {
       btn.addEventListener('click', () => I18N.set(btn.dataset.lang));
     });

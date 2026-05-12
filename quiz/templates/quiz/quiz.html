@@ -45,7 +45,8 @@
     <div class="quiz-subject-info">
       <div class="quiz-emoji">{{ subject.emoji }}</div>
       <div>
-        <div class="quiz-subject-name">{{ subject.name }}</div>
+        {# data-subject-key lets JS swap the name when language changes #}
+        <div class="quiz-subject-name" data-subject-key="{{ subject.name }}">{{ subject.name }}</div>
         <div class="quiz-meta" data-i18n="quiz_meta">Answer questions · Press Finish when done</div>
       </div>
     </div>
@@ -160,7 +161,6 @@
       hideLoading();
       qText.textContent = data.question;
       answerArea.style.display = 'flex';
-      // re-apply i18n so placeholder updates
       I18N.apply();
       answerInput.focus();
     } catch(e) {

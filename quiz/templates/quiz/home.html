@@ -83,7 +83,8 @@
     {% for subject in subjects %}
     <a href="{% url 'quiz' subject.pk %}" class="subject-card">
       <div class="subject-emoji">{{ subject.emoji }}</div>
-      <div class="subject-name">{{ subject.name }}</div>
+      {# data-subject-key holds the canonical Russian DB name so JS can translate it #}
+      <div class="subject-name" data-subject-key="{{ subject.name }}">{{ subject.name }}</div>
       <div class="subject-arrow" data-i18n="home_start">Start quiz <i class="fa-solid fa-arrow-right" style="font-size:0.65rem;"></i></div>
     </a>
     {% empty %}
@@ -106,7 +107,7 @@
     <a href="{% url 'results' session.pk %}" class="session-row">
       <div class="session-emoji">{{ session.subject.emoji }}</div>
       <div class="session-info">
-        <div class="session-subj">{{ session.subject.name }}</div>
+        <div class="session-subj" data-subject-key="{{ session.subject.name }}">{{ session.subject.name }}</div>
         <div class="session-meta">{{ session.answers.count }} <span data-i18n="home_questions">questions</span> · {{ session.ended_at|date:"M d, Y" }}</div>
       </div>
       {% if session.average_score is not None %}

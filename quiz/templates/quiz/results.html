@@ -34,7 +34,8 @@
   <div class="result-hero">
     <div class="result-bg-text">DONE</div>
     <div class="result-subject">{{ session.subject.emoji }}</div>
-    <div class="result-title">{{ session.subject.name }}</div>
+    {# data-subject-key lets JS translate the name on language switch #}
+    <div class="result-title" data-subject-key="{{ session.subject.name }}">{{ session.subject.name }}</div>
     {% if session.average_score is not None %}
     <div class="big-score">{{ session.average_score|floatformat:0 }}%</div>
     {% if session.rating %}
@@ -56,7 +57,7 @@
       </div>
       {% endif %}
       <div class="result-stat">
-        <div class="result-stat-val">{{ session.subject.name }}</div>
+        <div class="result-stat-val" data-subject-key="{{ session.subject.name }}">{{ session.subject.name }}</div>
         <div class="result-stat-label" data-i18n="res_subject">Subject</div>
       </div>
     </div>

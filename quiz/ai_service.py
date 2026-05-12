@@ -6,7 +6,8 @@ from django.conf import settings
 LANG_CONFIGS = {
     "en": {
         "system": "You must respond only in English.",
-        "question_prompt": lambda subject, rid: f"""
+        "question_prompt": lambda subject, rid, asked: (
+            f"""
 Create ONE question on the topic: {subject}.
 
 Strict format:
@@ -16,9 +17,17 @@ Question: <question text>
 - writing the answer
 - writing the solution
 - adding explanations
-
-ID: {rid}
-""",
+"""
+            + (
+                f"""
+❗ DO NOT repeat or rephrase any of these already-asked questions:
+{chr(10).join(f'- {q}' for q in asked)}
+"""
+                if asked
+                else ""
+            )
+            + f"\nID: {rid}\n"
+        ),
         "eval_prompt": lambda question, answer: f"""
 Question: {question}
 User's answer: {answer}
@@ -36,7 +45,8 @@ Comment: ...
     },
     "ru": {
         "system": "Отвечай только на русском языке.",
-        "question_prompt": lambda subject, rid: f"""
+        "question_prompt": lambda subject, rid, asked: (
+            f"""
 Создай ОДИН вопрос по теме: {subject}.
 
 Формат строго:
@@ -46,9 +56,17 @@ Comment: ...
 - писать ответ
 - писать решение
 - добавлять объяснения
-
-ID: {rid}
-""",
+"""
+            + (
+                f"""
+❗ НЕ ПОВТОРЯЙ и не перефразируй следующие уже заданные вопросы:
+{chr(10).join(f'- {q}' for q in asked)}
+"""
+                if asked
+                else ""
+            )
+            + f"\nID: {rid}\n"
+        ),
         "eval_prompt": lambda question, answer: f"""
 Вопрос: {question}
 Ответ пользователя: {answer}
@@ -66,7 +84,8 @@ ID: {rid}
     },
     "uz": {
         "system": "Faqat o'zbek tilida javob ber.",
-        "question_prompt": lambda subject, rid: f"""
+        "question_prompt": lambda subject, rid, asked: (
+            f"""
 Mavzu bo'yicha BITTA savol tuzing: {subject}.
 
 Qat'iy format:
@@ -76,9 +95,17 @@ Savol: <savol matni>
 - javob yozish
 - yechim yozish
 - tushuntirish qo'shish
-
-ID: {rid}
-""",
+"""
+            + (
+                f"""
+❗ Quyidagi allaqachon berilgan savollarni TAKRORLAMANG va qayta ifodalamang:
+{chr(10).join(f'- {q}' for q in asked)}
+"""
+                if asked
+                else ""
+            )
+            + f"\nID: {rid}\n"
+        ),
         "eval_prompt": lambda question, answer: f"""
 Savol: {question}
 Foydalanuvchi javobi: {answer}
@@ -132,10 +159,16 @@ def extract_score(text: str) -> int:
     return int(match.group(1)) if match else 0
 
 
-def generate_question(subject_name: str, lang: str = "en") -> str:
+def generate_question(subject_name: str, lang: str = "en", asked_questions: list = None) -> str:
+    """
+    Generate a new question on subject_name in the given language.
+    Pass asked_questions (list of question strings from the current session)
+    to prevent the AI from repeating them.
+    """
     cfg = get_lang_config(lang)
     random_id = random.randint(1, 100000)
-    prompt = cfg["question_prompt"](subject_name, random_id)
+    asked = asked_questions or []
+    prompt = cfg["question_prompt"](subject_name, random_id, asked)
     return ask_ai([
         {"role": "system", "content": cfg["system"]},
         {"role": "user", "content": prompt},

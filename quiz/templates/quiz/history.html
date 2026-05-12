@@ -45,7 +45,7 @@
     {% endif %}
       <div class="history-emoji">{{ session.subject.emoji }}</div>
       <div class="history-info">
-        <div class="history-subj">{{ session.subject.name }}</div>
+        <div class="history-subj" data-subject-key="{{ session.subject.name }}">{{ session.subject.name }}</div>
         <div class="history-meta">
           {{ session.answers.count }} <span data-i18n="hist_questions">questions</span> &middot;
           {{ session.started_at|date:"M d, Y · H:i" }}

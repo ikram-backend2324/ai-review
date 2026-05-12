@@ -12,6 +12,27 @@ from .models import Subject, QuizSession, QuizAnswer
 from .ai_service import generate_question, evaluate_answer
 
 
+# Subject name translations — keeps the AI prompt in the user's chosen language
+# even though subject names are stored in Russian in the DB.
+SUBJECT_TRANSLATIONS = {
+    "Математика":     {"en": "Mathematics",    "ru": "Математика",     "uz": "Matematika"},
+    "Физика":         {"en": "Physics",         "ru": "Физика",         "uz": "Fizika"},
+    "История":        {"en": "History",         "ru": "История",        "uz": "Tarix"},
+    "Языки":          {"en": "Languages",       "ru": "Языки",          "uz": "Tillar"},
+    "Программирование":{"en": "Programming",   "ru": "Программирование","uz": "Dasturlash"},
+    "Астрономия":     {"en": "Astronomy",       "ru": "Астрономия",     "uz": "Astronomiya"},
+    "Психология":     {"en": "Psychology",      "ru": "Психология",     "uz": "Psixologiya"},
+    "Химия":          {"en": "Chemistry",       "ru": "Химия",          "uz": "Kimyo"},
+    "Философия":      {"en": "Philosophy",      "ru": "Философия",      "uz": "Falsafa"},
+    "Экономика":      {"en": "Economics",       "ru": "Экономика",      "uz": "Iqtisodiyot"},
+}
+
+
+def _translated_subject(name: str, lang: str) -> str:
+    """Return subject name in the requested language, falling back to original."""
+    return SUBJECT_TRANSLATIONS.get(name, {}).get(lang, name)
+
+
 # ─── Auth Views ───────────────────────────────────────────────────────────────
 
 def login_view(request):
@@ -114,7 +135,21 @@ def api_get_question(request):
     lang = _get_lang(data)
 
     session = get_object_or_404(QuizSession, pk=session_id, user=request.user, status="active")
-    question = generate_question(session.subject.name, lang=lang)
+
+    # Collect all questions already answered in this session (DB is the source of truth)
+    asked_questions = list(
+        session.answers.values_list("question", flat=True)
+    )
+
+    # Also include the current unanswered question (if the user hit Skip)
+    current_q = request.session.get(f"current_question_{session_id}")
+    if current_q and current_q not in asked_questions:
+        asked_questions.append(current_q)
+
+    # Translate the subject name so the AI gets it in the right language
+    subject_name = _translated_subject(session.subject.name, lang)
+
+    question = generate_question(subject_name, lang=lang, asked_questions=asked_questions)
     request.session[f"current_question_{session_id}"] = question
     return JsonResponse({"question": question})
 
